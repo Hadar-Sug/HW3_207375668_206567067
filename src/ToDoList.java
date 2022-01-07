@@ -4,19 +4,36 @@ import java.util.function.Consumer;
 public class ToDoList implements Cloneable, TaskIterable {
     private ArrayList<Task> tasks = new ArrayList<>();// need to initialize?
 
-
-    public ArrayList<Task> getTasks() {
+    /**
+     * getter for actual TDL "under the hood"
+     * @return list itself
+     */
+    protected ArrayList<Task> getTasks() { //protected?
         return tasks;
     }
 
+    /**
+     * getter for specific task in the list
+     * @param i index of task we want
+     * @return task in specified index
+     */
     public Task getTask(int i) {
         return tasks.get(i);
     }
 
-    public void setTasks(ArrayList<Task> tasks) {
+    /**
+     * setter for TDL
+     * @param tasks new List
+     */
+    protected void setTasks(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
+    /**
+     * adds a task if it doesn't already exist.
+     * throws unchecked exception
+     * @param taskToAdd task were adding
+     */
     public void addTask(Task taskToAdd) {
         for (Task task : tasks) {
             if (task.equals(taskToAdd))
@@ -25,6 +42,10 @@ public class ToDoList implements Cloneable, TaskIterable {
         tasks.add(taskToAdd);
     }
 
+    /**
+     * deep clone of a TDL
+     * @return deep clone of TDL
+     */
     @Override
     public ToDoList clone() { //public?
         try{
@@ -49,6 +70,11 @@ public class ToDoList implements Cloneable, TaskIterable {
         return uncompletedCopy.clone();
     }
 
+    /**
+     * checks if each TDL's uncompleted tasks are the same, regardless of the order
+     * @param obj what were comparing with
+     * @return true if the same' false if not
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != ToDoList.class)
@@ -56,6 +82,7 @@ public class ToDoList implements Cloneable, TaskIterable {
         ToDoList other = (ToDoList) obj;
         ToDoList uncompletedThis = this.getUncompletedList(); // only want to compare uncompleted tasks
         ToDoList uncompletedOther = other.getUncompletedList();
+        //hope this works
         Set<Task> thisListSet = new HashSet<>(uncompletedThis.tasks);// make each one as a set
         Set<Task> otherListSet = new HashSet<>(uncompletedOther.tasks);
         return thisListSet.equals(otherListSet); // compare sets, this wat we ignore order
@@ -67,43 +94,50 @@ public class ToDoList implements Cloneable, TaskIterable {
      */
     public ToDoList getUncompletedList(){
         ToDoList uncompleted = new ToDoList();
-        setScanningType(ScanningType.UNCOMPLETED);
-        Iterator<Task> it = iterator();
-        while (it.hasNext()){
-            uncompleted.addTask(it.next());
-        }
-        return uncompleted;
-        //underneath is the same thing but they asked to do it this way?
-   /*     for (Task task : this.tasks) {
+        for (Task task : this.tasks) {
             if (!task.isCompleted()) {
                 uncompleted.addTask(task);
             }
         }
+        return uncompleted;
+        //underneath is the same thing but they asked to do it this way?
+/*        setScanningType(ScanningType.UNCOMPLETED);
+        Iterator<Task> it = iterator();
+        while (it.hasNext()){
+            uncompleted.addTask(it.next());
+        }
         return uncompleted;*/
     }
 
+    /**
+     * string of the TDL in requested format
+     * @return [(description, dueDate), (description, dueDate), …, (description, dueDate)]
+     */
     @Override
     public String toString() {
-        setScanningType(ScanningType.UNCOMPLETED);
-        Iterator<Task> it = iterator();
+        ToDoList uncompletedCopy = this.getUncompletedList(); // lets get only the uncompleted tasks
         StringBuilder builder = new StringBuilder("[");
-        while (it.hasNext()) {
-            builder.append(", ").append(it.next().toString());
-        }
+        for (Task task:uncompletedCopy) // go over the uncompleted list and add each item to the builder
+            builder.append(", ").append(task.toString());
         builder.append("]");
         return builder.toString();
     }
 
+    /**
+     * setter for scanning type
+     * @param scanningType wanted type
+     */
     @Override
     public void setScanningType(ScanningType scanningType) {
         ToDoListIterator.setScanningType(scanningType);
     }
 
-
+    /**
+     * gets and iterator for th TDL
+     * @return iterator
+     */
     @Override
     public Iterator<Task> iterator() {
         return new ToDoListIterator(this);
     }
-
-
 }
