@@ -60,7 +60,7 @@ public class ToDoListIterator implements Iterator<Task> {
     @Override
     public Task next() {
         assert index<toDoList.getTasks().size();
-        return toDoList.getTask(index);
+        return toDoList.getTask(index++);
     }
 
 }

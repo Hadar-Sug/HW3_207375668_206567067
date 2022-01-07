@@ -2,7 +2,14 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class ToDoList implements Cloneable, TaskIterable {
-    private ArrayList<Task> tasks = new ArrayList<>();// need to initialize?
+    private ArrayList<Task> tasks;
+
+    /**
+     * constructor for TDL
+     */
+    public ToDoList() {
+        this.tasks = new ArrayList<>();
+    }
 
     /**
      * getter for actual TDL "under the hood"
@@ -35,11 +42,12 @@ public class ToDoList implements Cloneable, TaskIterable {
      * @param taskToAdd task were adding
      */
     public void addTask(Task taskToAdd) {
-        for (Task task : tasks) {
+        for (Task task : this.tasks) {
             if (task.equals(taskToAdd))
                 throw new TaskAlreadyExistsException("The task already exists");
         }
-        tasks.add(taskToAdd);
+        this.tasks.add(taskToAdd);
+        String test = this.toString();
     }
 
     /**
@@ -96,7 +104,7 @@ public class ToDoList implements Cloneable, TaskIterable {
         ToDoList uncompleted = new ToDoList();
         for (Task task : this.tasks) {
             if (!task.isCompleted()) {
-                uncompleted.addTask(task);
+                uncompleted.tasks.add(task);
             }
         }
         return uncompleted;
@@ -115,12 +123,9 @@ public class ToDoList implements Cloneable, TaskIterable {
      */
     @Override
     public String toString() {
-        ToDoList uncompletedCopy = this.getUncompletedList(); // lets get only the uncompleted tasks
-        StringBuilder builder = new StringBuilder("[");
-        for (Task task:uncompletedCopy) // go over the uncompleted list and add each item to the builder
-            builder.append(", ").append(task.toString());
-        builder.append("]");
-        return builder.toString();
+        ToDoList uncompleted = this.getUncompletedList();
+        String wanted = uncompleted.tasks.toString();
+        return wanted;
     }
 
     /**
