@@ -28,6 +28,7 @@ public class ToDoList implements Cloneable, TaskIterable {
         return tasks.get(i);
     }
 
+
     /**
      * setter for TDL
      * @param tasks new List
@@ -43,12 +44,20 @@ public class ToDoList implements Cloneable, TaskIterable {
      */
     public void addTask(Task taskToAdd) {
         for (Task task : this.tasks) {
-            if (task.equals(taskToAdd))
+            if (task.equals(taskToAdd) || task.getTaskName().equals(taskToAdd.getTaskName()))
                 throw new TaskAlreadyExistsException("The task already exists");
         }
         this.tasks.add(taskToAdd);
-        String test = this.toString();
     }
+
+    /**
+     * copy constructor
+     * @param other TDL were copying
+     */
+  /*  private ToDoList(ToDoList other){
+        this.tasks = (ArrayList<Task>) other.tasks.clone();
+
+    }*/
 
     /**
      * deep clone of a TDL
@@ -58,9 +67,10 @@ public class ToDoList implements Cloneable, TaskIterable {
     public ToDoList clone() { //public?
         try{
             ToDoList temp = (ToDoList) super.clone(); //shallow copy of our list
-            for (int i = 0; i < temp.tasks.size(); i++) {
-                Task tempTask = new Task(temp.tasks.get(i)); // deep copy of each task
-                temp.tasks.set(i, tempTask); //set the deep copy we made
+            temp.tasks = (ArrayList<Task>) this.tasks.clone();
+//            ToDoList copy = new ToDoList(temp); // maybe unnecessary
+            for (int i = 0; i < tasks.size(); i++) {
+                temp.tasks.set(i,temp.getTask(i).clone());
             }
             return temp;
         } catch (CloneNotSupportedException e) {
@@ -90,10 +100,7 @@ public class ToDoList implements Cloneable, TaskIterable {
         ToDoList other = (ToDoList) obj;
         ToDoList uncompletedThis = this.getUncompletedList(); // only want to compare uncompleted tasks
         ToDoList uncompletedOther = other.getUncompletedList();
-        //hope this works
-        Set<Task> thisListSet = new HashSet<>(uncompletedThis.tasks);// make each one as a set
-        Set<Task> otherListSet = new HashSet<>(uncompletedOther.tasks);
-        return thisListSet.equals(otherListSet); // compare sets, this wat we ignore order
+        return uncompletedThis.containsAll(uncompletedOther) && uncompletedOther.containsAll(uncompletedThis);
     }
 
     /**
@@ -144,5 +151,31 @@ public class ToDoList implements Cloneable, TaskIterable {
     @Override
     public Iterator<Task> iterator() {
         return new ToDoListIterator(this);
+    }
+
+    /**
+     * checks if this TDl contains all of others TDl's Tasks
+     * @param other TDL were checking are equal
+     * @return true if
+     */
+    private boolean containsAll(ToDoList other){
+        for (Task task:other.tasks) {
+            if (!this.contains(task))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * checks if this TDL contains a specific Task
+     * @param other task were checking exists
+     * @return true if exists, false if not
+     */
+    private boolean contains(Task other){
+        for (Task task:tasks) {
+            if (other.equals(task))
+                return true;
+        }
+        return false;
     }
 }
