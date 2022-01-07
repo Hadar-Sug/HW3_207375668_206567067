@@ -25,7 +25,7 @@ public class ToDoList implements Cloneable, TaskIterable {
      * @param i index of task we want
      * @return task in specified index
      */
-    public Task getTask(int i) {
+    protected Task getTask(int i) {
         return tasks.get(i);
     }
 
@@ -52,15 +52,6 @@ public class ToDoList implements Cloneable, TaskIterable {
     }
 
     /**
-     * copy constructor
-     * @param other TDL were copying
-     */
-  /*  private ToDoList(ToDoList other){
-        this.tasks = (ArrayList<Task>) other.tasks.clone();
-
-    }*/
-
-    /**
      * deep clone of a TDL
      * @return deep clone of TDL
      */
@@ -68,8 +59,7 @@ public class ToDoList implements Cloneable, TaskIterable {
     public ToDoList clone() { //public?
         try{
             ToDoList temp = (ToDoList) super.clone(); //shallow copy of our list
-            temp.tasks = (ArrayList<Task>) this.tasks.clone();
-//            ToDoList copy = new ToDoList(temp); // maybe unnecessary
+            temp.tasks = (ArrayList<Task>) this.tasks.clone(); //create a shallow copy of the ArrayList
             for (int i = 0; i < tasks.size(); i++) {
                 temp.tasks.set(i,temp.getTask(i).clone());
             }
@@ -119,13 +109,24 @@ public class ToDoList implements Cloneable, TaskIterable {
     }
 
     /**
-     * string of the TDL in requested format
+     * string of the TDL in requested format, only uncompleted, as requested
      * @return [(description, dueDate), (description, dueDate), …, (description, dueDate)]
      */
     @Override
     public String toString() {
         ToDoList uncompleted = this.getUncompletedList();
-        return uncompleted.tasks.toString();
+       /* return uncompleted.tasks.toString();*/
+        String prefix = "[(";
+        String infix = "), (";
+        String postfix = ")]";
+
+        if (uncompleted.tasks.size() == 0){
+            return "[]";
+        }
+        StringJoiner joiner = new StringJoiner(infix, prefix, postfix);
+        for (Task task:uncompleted.tasks)
+            joiner.add(task.toString());
+        return joiner.toString();
     }
 
     /**

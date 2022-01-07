@@ -5,7 +5,6 @@ import java.util.Date;
 public class Task implements Cloneable {
     private String taskName;
     private Date dueDate; // make sure format is DD.MM.YYYY. do this when printing
-//    private String dueDate;
     private Boolean taskFinished = false;
     private static final SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -53,7 +52,7 @@ public class Task implements Cloneable {
         if (obj == null || obj.getClass() != Task.class)
             return false;
         Task other = (Task) obj;
-        return taskName.equals(other.taskName) && dueDate.equals(other.dueDate);
+        return taskName.equals(other.taskName) && dueDate.equals(other.dueDate) && this.taskFinished==other.taskFinished;
     }
 
     /**
