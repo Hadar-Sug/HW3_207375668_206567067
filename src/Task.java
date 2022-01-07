@@ -63,7 +63,7 @@ public class Task implements Cloneable {
     @Override
     public String toString() {
         String dueDate = format1.format(getDueDate()); // supposed to give us the date in wanted formant
-        return "(" + getTaskName() + ", " + dueDate + ")";
+        return getTaskName() + ", " + dueDate;
     }
 
     /**

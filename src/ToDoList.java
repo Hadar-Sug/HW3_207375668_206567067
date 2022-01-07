@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.function.Consumer;
 
+
 public class ToDoList implements Cloneable, TaskIterable {
     private ArrayList<Task> tasks;
 
@@ -109,19 +110,12 @@ public class ToDoList implements Cloneable, TaskIterable {
      */
     public ToDoList getUncompletedList(){
         ToDoList uncompleted = new ToDoList();
-        for (Task task : this.tasks) {
-            if (!task.isCompleted()) {
-                uncompleted.tasks.add(task);
-            }
+        setScanningType(ScanningType.UNCOMPLETED);
+        for (Task task : this) {
+            uncompleted.addTask(task);
         }
+        setScanningType(ScanningType.ALL);
         return uncompleted;
-        //underneath is the same thing but they asked to do it this way?
-/*        setScanningType(ScanningType.UNCOMPLETED);
-        Iterator<Task> it = iterator();
-        while (it.hasNext()){
-            uncompleted.addTask(it.next());
-        }
-        return uncompleted;*/
     }
 
     /**
@@ -131,8 +125,7 @@ public class ToDoList implements Cloneable, TaskIterable {
     @Override
     public String toString() {
         ToDoList uncompleted = this.getUncompletedList();
-        String wanted = uncompleted.tasks.toString();
-        return wanted;
+        return uncompleted.tasks.toString();
     }
 
     /**
